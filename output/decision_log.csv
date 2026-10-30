@@ -1,0 +1,10 @@
+table,issue,decision,reason
+patients,exact duplicate rows,Drop exact duplicate rows and keep the first occurrence.,Repeated export rows represent the same patient registration without new information.
+patients,gender spellings that are not a code,"Strip, lowercase, and map valid spellings to F, M, or X; set unknown or blank values to missing.",Standardizes free-text gender entries into the three contract categories while leaving unrecorded values missing.
+patients,site codes needing normalization,Uppercase site_code and remove all spaces and hyphens.,Ensures consistent formatting so patient records match the normalized keys in the site directory.
+patients,birth_year sentinel 9999,Replace 9999 with missing (NA) and cast to nullable Int64.,9999 is a sentinel code for unrecorded birth year rather than a real birth year.
+visits,weight column named wt_kg in visits_south.csv,Rename wt_kg to weight_kg before stacking with visits_north.csv.,Aligns column names across both clinic exports so weights stack into a single unified column.
+visits,sbp sentinel 999 and readings outside 70 through 250,"Convert values outside 70-250 mmHg, including sentinel 999, to missing (NA) in Int64.",Removes unmeasured sentinel codes and physiologically implausible recording errors while keeping the visit row.
+visits,impossible and loosely written visit dates,Parse only exact YYYY-MM-DD calendar dates and convert invalid strings to NaT.,Enforces strict date formatting and prevents non-existent calendar dates from corrupting longitudinal timelines.
+visits,repeated patient_id and visit pairs,"Sort by visit_time and keep the last record for each (patient_id, visit) pair.",Same-visit repeats represent clinical rechecks where the later measurement is the final reading.
+sites,repeated site_code rows,Filter sites to keep only rows where record_status is current.,Retains the active clinic metadata per site_code and removes outdated retired versions before joining.
